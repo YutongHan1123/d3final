@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exercise Portfolio</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <style>
+    </style>
+  </head>
+
+    <header>
+      <div class="container">
+        <div class="page-header">
+          <h1>Yutong Han's Final Project: Age of Women when having babies in the US</h1>
+            <p id="discrip">Hi, I'm Yutong Han. I'm a data visualization designer, UX researcher and UI designer.</p>
+        </div>
+      </div>
+    </header>
+    <page size="yutong">
+    <div id="name00">
+
+      <main>
+        <h2>INTRODUCTION</h2>
+
+        <p>During the first semester, I was working hard as an Interactive Media student, and I decided to pave my way to data visualization as my career. In this case, professor Cairo recommended the D3.js course to me to further my understanding of infographics. With the help of D3.js, I could make some professional charts and maps on the website due to the various powerful D3.js.
+        </p>
+
+        <h2>BACKGROUND</h2>
+
+        <p>An interesting topic strongly caught my eyes when I went through the New York Times’ website, “ The Age That Woman Have Babies“. The report not only says that women gradually have their first baby at a later age in 2016 compared with 1980, but also points out that the biggest factor of this situation is education, which indicates more potential energy in childhood educating. I am really curious about this topic. Becoming a mother is often seen as a unifying milestone for women in the world. I want to verify this conclusion to ensure if the age of the mother is really related to education with data from 2000 to 2017. If my result also coincides with theirs, education does become a big factor in the increase of the age that women have babies. And final project will become my test area to apply what I studied through this course.  In this way, I decided to finalize my d3.JS final project topic as the age that women have babies.
+        </p>
+
+        <h2>ANALYSIS METHODOLOGY</h2>
+
+        <p>For the study, I used public data from America’s Centers for Disease Control and Prevention (CDC) and Simply Analytics through comparison the distribution of each state’s education issue and mean age of mother between 2000 and 2018 to answer the following questions.
+        </p>
+        <p>1.	How did the age of women who have their first baby in the United States change in these years?
+        </p>
+        <p>2.	Is there a correlation between education level and the change of the age of women who have their first baby?
+        </p>
+
+
+        <h2>RESULTS</h2>
+
+        <p>I started my study with the creation of choropleth maps that shows the United States using the states zoning polygons. Theswe maps allowed me to visualize the distribution of the mean age of first-time mothers in the United States in 2000 and in 2017. I then added the csv file of the mean age of first-time mothers in each state. I created a choropleth map. Because I want to keep the consistency of the legends in the two maps, creating better data visualization between them, I created 9 manual breaks in the 2000 map then imported this legend into the 2017 map and used a blue color ramp.
+        </p>
+        <p>Because I wanted to compare these two maps using the same evaluation criteria, I used the same legend, which represents the ages of women having their first babies, for these two maps. When the color is deeper, it means this area has a higher average age of first-time mothers. In this case, it’s obvious that more women have their babies at a later age when you look at the second map. The second map is full of deep blue, unlike the first mao with baby blue areas. I calculated the mean age of first-time mothers in 2017, which is <strong>28.65</strong>, <strong>4 years older</strong> than <strong>24.65</strong> in 2000. So there are more women in their early 30s having babies than younger mothers for the first time. And first-time mothers are older in big cities and on the coasts (eg. New York), and younger in rural areas and in the Great Plains and the South (eg.Oklahoma).
+        </p>
+
+
+      </main>
+    </div>
+
+    <div id="name01">
+    	<h1>The Mean Age of Mother in 2000 and 2017</h1>
+    <p>You could put mouse hover states to see the mean age of mother in each state.
+    </p>
+  </div>
+    <div class="map">
+    </div>
+  </div>
+  <div class="map2">
+  </div>
+</div>
+<div class="dot">
+</div>
+
+
+  <script src="js/d3.min.js"></script>
+  <script src="js/lodash.min.js"></script>
+  <script src="js/pi.js"></script>
+  <script src="js/jquery-1.10.2.min.js"></script>
+    <script>
+    var svg = d3.select(".map").append("svg");
+    var w = 900, h = 500;
+
+    var projection = d3.geoAlbersUsa();
+    var path = d3.geoPath().projection(projection);
+
+    var color_domain = [22, 23, 24, 25, 26, 27, 28, 29, 30];
+    var colors = d3.scaleThreshold()
+                   .domain(color_domain)
+                   .range(d3.schemeBlues[9]);
+
+    var tooltip = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+    var legend_labels = ["22","23","24","25","26","27","28","29","30"];
+    var ext_color_domain = [22, 23, 24, 25, 26, 27, 28, 29, 30];
+
+    var lgw = 20, lgh = 20;
+
+    d3.json("data/geojson/us-states.json").then(function(usMap) {
+      d3.csv("data/mean-age-of-mother-2000.csv").then(function(data) {
+          var usaFeatures = usMap.features;
+          data.forEach(function(d) {
+            var stateName = d.state;
+            var age = +d.age;
+            // console.log(d.age);
+
+            usaFeatures.forEach(function(u) {
+              var usaState = u.properties.name;
+              if (usaState == stateName) {
+                u.properties.age = age;
+                // console.log(usaFeatures);
+              }
+            });
+          });
+  // var stateShapes =
+
+  svg.attr("width", w)
+     .attr("height", h);
+
+  svg.selectAll("path")
+     .data(usaFeatures)
+     .enter()
+     .append("path")
+     .attr("d", path)
+     .attr("fill", function(d) {
+           if(d.properties.age) {
+             return colors(d.properties.age);
+           } else {
+             return "#ccc";
+           }
+         })
+     .attr("stroke", "#fff")
+     .attr("stroke-width", "2px")
+     .on("mouseover", function(d) {
+            tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+            tooltip.html("<p><strong>"+ d.properties.name +"</strong></p>" +
+          "<P>"+ "Mean Age: " + d.properties.age +"</P>")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+          })
+     .on("mouseout", function(d) {
+            tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+          });
+
+
+
+  var legend = svg.selectAll("g.legend")
+                  .data(ext_color_domain)
+                  .enter().append("g")
+                  .attr("class", "legend");
+
+  legend.append("rect")
+        .attr("x", 20)
+        .attr("y", function(d, i){ return h - (i*lgh) - 2*lgh;})
+        .attr("width", lgw)
+        .attr("height", lgh)
+        .style("fill", function(d, i) { return colors(d); })
+        .style("opacity", 0.8);
+
+  legend.append("text")
+        .attr("x", 50)
+        .attr("y", function(d, i){
+          return h - (i*lgh) - lgh - 4;
+        })
+        .text(function(d, i){
+          return legend_labels[i];
+        });
+      });
+    });
+
+    var svg2 = d3.select(".map2").append("svg");
+
+    d3.json("data/geojson/us-states.json").then(function(usMap) {
+      d3.csv("data/mean-age-of-mother-2017.csv").then(function(data) {
+          var usaFeatures2 = usMap.features;
+          data.forEach(function(d) {
+            var stateName_ = d.state;
+            var Age = +d.Age;
+            // console.log(d.Age);
+
+            usaFeatures2.forEach(function(u) {
+              var usaState2 = u.properties.name;
+              if (usaState2 == stateName_) {
+                u.properties.Age = Age;
+                // console.log(usaFeatures2);
+              }
+            });
+          });
+
+    svg2.attr("width", w)
+     .attr("height", h);
+
+    svg2.selectAll("path")
+     .data(usaFeatures2)
+     .enter()
+     .append("path")
+     .attr("d", path)
+     .attr("fill", function(d) {
+           if(d.properties.Age) {
+             return colors(d.properties.Age);
+           } else {
+             return "#ccc";
+           }
+         })
+     .attr("stroke", "#fff")
+     .attr("stroke-width", "2px")
+     .on("mouseover", function(d) {
+            tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+            tooltip.html("<p><strong>"+ d.properties.name +"</strong></p>" +
+          "<P>"+ "Mean Age: " + d.properties.Age +"</P>")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mouseout", function(d) {
+            tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+          });
+
+var legend2 = svg2.selectAll("g.legend2")
+                .data(ext_color_domain)
+                .enter().append("g")
+                .attr("class", "legend");
+
+  legend2.append("rect")
+        .attr("x", 20)
+        .attr("y", function(d, i){ return h - (i*lgh) - 2*lgh;})
+        .attr("width", lgw)
+        .attr("height", lgh)
+        .style("fill", function(d, i) { return colors(d); })
+        .style("opacity", 0.8);
+
+  legend2.append("text")
+        .attr("x", 50)
+        .attr("y", function(d, i){
+          return h - (i*lgh) - lgh - 4;
+        })
+        .text(function(d, i){
+          return legend_labels[i];
+        });
+
+   });
+ });
+
+ var w3 = 900;
+ var h3 = 600;
+ var margin = {
+   top: 60,
+   right: 60,
+   left: 60,
+   bottom: 60
+ };
+
+ // var svg3 = d3.select(".dot")
+ //             .append("svg")
+ //             .attr("width", w3 - margin.right)
+ //             .attr("height", h3);
+
+ d3.csv("data/plot.csv").then(function(plot) {
+   var svg3 = d3.select(".dot").append("svg");
+   plot.forEach(function(d){
+     d.education0 = +d.education0;
+     d.education8 = +d.education8;
+     d.age = +d.age;
+     d.Age = +d.Age;
+     console.log(d.education0);
+     // console.log(d.age);
+   })
+
+   svg3.attr("width", w3 - margin.right)
+    .attr("height", h3);
+
+   var xScale = d3.scaleLinear()
+                  .domain([0,52])
+                  .range([0, (w3 - margin.left - margin.right)]);
+
+   var yScale = d3.scaleLinear()
+                  .domain([8,25])
+                  .range([(h3 - margin.top - margin.bottom),0]);
+
+   var yScale2 = d3.scaleLinear()
+                   .domain([21,32])
+                   .range([(h3 - margin.top - margin.bottom),0]);
+
+   var xAxis = d3.axisBottom()
+                 .scale(xScale)
+                 .ticks(40);
+   var yAxis = d3.axisLeft()
+                 .scale(yScale)
+                 .ticks(20);
+
+   var yAxis2 = d3.axisLeft()
+                  .scale(yScale2)
+                  .ticks(10);
+
+   svg3.append("g")
+      .attr("transform", "translate(" + margin.left + ", " + (h3 - margin.bottom) + ")")
+      .attr("class", "xaxis")
+      .call(xAxis)
+      .append("text")
+      .attr("class", "label")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .attr("fill", "black")
+      .text("State");
+
+   svg3.append("g")
+      .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
+      .attr("class", "yaxis")
+      .call(yAxis)
+      .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".21em")
+      .style("text-anchor", "end")
+      .attr("fill", "black")
+      .text("Percent of Education Attainment");
+
+      svg3.append("g")
+         .attr("transform", "translate(" + (w3 - margin.left - 0.5) + ", " + margin.top + ")")
+         .attr("class", "yaxis2")
+         .call(yAxis2)
+         .append("text")
+         .attr("class", "label")
+         .attr("transform", "rotate(-90)")
+         .attr("y", 6)
+         .attr("dy", "-.71em")
+         .style("text-anchor", "end")
+         .attr("fill", "black")
+         .text("Mean Age");
+
+   svg3.selectAll(".dot0")
+      .data(plot)
+      .enter()
+      .append("circle")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .classed("dot0", true)
+      .attr("cx", function(d) {
+        return xScale(d.place);
+      })
+      .attr("cy", function(d) {
+        return yScale(d.education0);
+      })
+      .attr("r", 5)
+      .on("mouseover", function(d) {
+           tooltip.transition()
+           .duration(200)
+           .style("opacity", .9);
+           tooltip.html("<p><strong>"+ d.state +"</strong></p>" +
+         "<P>"+ "≥BA: " + d.education0 + "%" +"</P>")
+           .style("left", (d3.event.pageX) + "px")
+           .style("top", (d3.event.pageY - 28) + "px");
+         })
+    .on("mouseout", function(d) {
+           tooltip.transition()
+           .duration(500)
+           .style("opacity", 0);
+         });
+
+
+    svg3.selectAll(".dot1")
+       .data(plot)
+       .enter()
+       .append("circle")
+       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+       .classed("dot1", true)
+       .attr("cx", function(d) {
+         return xScale(d.place);
+       })
+       .attr("cy", function(d) {
+         return yScale(d.education8);
+       })
+       .attr("r", 5)
+       .on("mouseover", function(d) {
+            tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+            tooltip.html("<p><strong>"+ d.state +"</strong></p>" +
+          "<P>"+ "≥BA: " + d.education8 + "%" +"</P>")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+          })
+     .on("mouseout", function(d) {
+            tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+          });
+
+
+
+     svg3.selectAll(".dot3")
+        .data(plot)
+        .enter()
+        .append("circle")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .classed("dot3", true)
+        .attr("cx", function(d) {
+          return xScale(d.place);
+        })
+        .attr("cy", function(d) {
+          return yScale2(d.age);
+        })
+        .attr("r", 5)
+        .on("mouseover", function(d) {
+             tooltip.transition()
+             .duration(200)
+             .style("opacity", .9);
+             tooltip.html("<p><strong>"+ d.state +"</strong></p>" +
+           "<P>"+ "Mean Age: " + d.age +"</P>")
+             .style("left", (d3.event.pageX) + "px")
+             .style("top", (d3.event.pageY - 28) + "px");
+           })
+      .on("mouseout", function(d) {
+             tooltip.transition()
+             .duration(500)
+             .style("opacity", 0);
+           });
+      svg3.selectAll(".dot2")
+         .data(plot)
+         .enter()
+         .append("circle")
+         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+         .classed("dot2", true)
+         .attr("cx", function(d) {
+           return xScale(d.place);
+         })
+         .attr("cy", function(d) {
+           return yScale2(d.Age);
+         })
+         .attr("r", 5)
+         .on("mouseover", function(d) {
+              tooltip.transition()
+              .duration(200)
+              .style("opacity", .9);
+              tooltip.html("<p><strong>"+ d.state +"</strong></p>" +
+            "<P>"+ "Mean Age: " + d.Age +"</P>")
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+            })
+       .on("mouseout", function(d) {
+              tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
+            });
+  var keys = ["Mean Age in 2017", "Mean Age in 2000", "Education Level in 2018", "Education Level in 2000"];
+
+  svg3.append("circle")
+      .attr("cx", w3 - margin.right*4)
+      .attr("cy",70)
+      .attr("r", 6)
+      .style("fill", "rgba(226, 89, 139, 0.7)")
+      .style("stroke", "rgba(226, 89, 139, 0.7)");
+  svg3.append("circle")
+      .attr("cx", w3 - margin.right*4)
+      .attr("cy",90)
+      .attr("r", 6)
+      .style("fill", "rgba(226, 89, 139, 0.3)")
+      .style("stroke", "rgba(226, 89, 139, 0.3)");
+  svg3.append("circle")
+      .attr("cx", w3 - margin.right*4)
+      .attr("cy",110)
+      .attr("r", 6)
+      .style("fill", "rgba(70, 131, 180, 0.7)")
+      .style("stroke", "rgba(70, 131, 180, 0.7)");
+  svg3.append("circle")
+      .attr("cx", w3 - margin.right*4)
+      .attr("cy",130)
+      .attr("r", 6)
+      .style("fill", "rgba(70, 131, 180, 0.3)")
+      .style("stroke", "rgba(70, 131, 180, 0.3)");
+
+      svg3.append("text")
+          .attr("x", w3 - margin.right*3.8)
+          .attr("y", 70)
+          .text("Mean Age in 2017")
+          .style("font-size", "12px")
+          .style("fill", "rgba(226, 89, 139, 0.7)")
+          .attr("alignment-baseline","middle");
+      svg3.append("text")
+          .attr("x", w3 - margin.right*3.8)
+          .attr("y", 90)
+          .text("Mean Age in 2000")
+          .style("font-size", "12px")
+          .style("fill", "rgba(226, 89, 139, 0.3)")
+          .attr("alignment-baseline","middle");
+
+  svg3.append("text")
+      .attr("x", w3 - margin.right*3.8)
+      .attr("y", 110)
+      .text("Education Level in 2018")
+      .style("font-size", "12px")
+      .style("fill", "rgba(70, 131, 180, 0.7)")
+      .attr("alignment-baseline","middle");
+  svg3.append("text")
+      .attr("x", w3 - margin.right*3.8)
+      .attr("y", 130)
+      .text("Education Level in 2000")
+      .style("font-size", "12px")
+      .style("fill", "rgba(70, 131, 180, 0.3)")
+      .attr("alignment-baseline","middle");
+  // var colors = d3.scaleThreshold()
+  //                .domain(keys)
+  //                .range([rgba(70, 131, 180, 0.3), rgba(70, 131, 180, 0.7), rgba(70, 131, 180, 0.7), rgba(70, 131, 180, 0.3)]);
+
+  // var legend3 = svg.selectAll("g.legend3")
+  //                  .data(keys)
+  //                  .enter().append("g")
+  //                  .attr("class", "legend");
+  //
+  //     legend3.append("circle")
+  //            .attr("x", 20)
+  //            .attr("y", function(d, i){ return h3 - (i*lgh) - 2*lgh;})
+  //            .attr("width", lgw)
+  //            .attr("height", lgh)
+  //            .style("fill", function(d, i) { return colors(d); })
+  //            .style("opacity", 0.8);
+  //
+  //     legend3.append("text")
+  //           .attr("x", 50)
+  //           .attr("y", function(d, i){
+  //                        return h - (i*lgh) - lgh - 4;
+  //                      })
+  //           .text(function(d, i){
+  //                        return keys[i];
+  //                      });
+
+   // svg3.selectAll('text')
+   //    .data(plot)
+   //    .enter()
+   //    .append("text")
+   //    .text(function(d) {
+   //      return d.state;
+   //    })
+   //    .attr("x", function(d) {
+   //      return d.place*18;
+   //    })
+   //    .attr("y", function(d) {
+   //      return d.education0*20;
+   //    })
+   //    .attr("font-family", "sans-serif")
+   //    .attr("font-size", "5px")
+   //    .attr("fill", "black");
+ })
+
+    </script>
+    <div id ="name02">
+    <h2>The Distribution between Education Attainment and the Mean Age of Mother </h2>
+    <p>You could put mouse hover circles to see the representative meanings of each circle in each state.
+    </p>
+  </div>
+  <div id ="name03">
+    <p>Because I want to show the relationship between education attainment and the mean age of mother. I did two things, first I created a scatter plot charts to see if there’s a correlation between education attainment and the mean age of first-time mothers. Deep color circles represent the data in 2018. Light color circles represent the data in 2000. In the third chart, red circles mean the age of first-time mothers. Blue circles mean education attainment. It obvious that deep circles grouped together, and light circles grouped together in the third chart. So, I think there is a correlation between education attainment and the mean age of first-time mothers.
+    </p>
+
+    <p>In order to further prove the validity of my speculation, I calculated the coefficient correlation between education attainment and the mean age of first-time mothers. The result is unexpected, the coefficient correlation between education attainment and the mean age of first-time mothers is 0.7670 (2000) and 0.8127 (2018). They do have a strong correlation, especially in 2018.
+    </p>
+
+    <h2>DISCUSSION</h2>
+
+    <p>Now I am able to answer most of the questions originally posed. However, I found it difficult to find the data of the mean age of mothers in 2017. I had to input every state’s data by hand.
+    </p>
+<p>1.	How did the age of women who have their first baby in the United States change between 2000 and 2017?</p>
+<p> &nbsp &nbsp &nbsp• I found that <strong>more women in their early 30s have babies than younger mothers</strong> in 2017.</p>
+<p>2.	Is there a correlation between the education attainments and the change of the age of women who have their first baby?</p>
+<p>  &nbsp &nbsp &nbsp•	There is <strong>a strong correlation between the education attainment and the change of the age of women who have their first baby</strong>. And it’s a stronger factor than the value of homes.</p>
+<p>This study is just a small example of the power of d3.js for the discussion and verification of social issues. Without geospatial analysis, combing through data of the United States would be far too time-consuming. My intention is to use the knowledge gained in this course to help my firm gain an advantage in the field of data visualization, and I really learned a lot with the help of my professor’s patient teaching.
+</p>
+</div>
+
+
+
+</page>
+  </body>
+</html>

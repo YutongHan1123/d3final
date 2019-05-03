@@ -1,0 +1,159 @@
+.container {
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 5%;
+  margin-bottom: 3%;
+  color: white;
+  text-shadow:0 0.1em 0.2em rgba(70, 131, 180, 0.9);
+}
+
+.page-header {
+  margin-left:;
+}
+
+#discrip {
+  font-style: italic;
+  font-size: 1.05em;
+  line-height: 25px;
+  margin-top: 0.1%;
+  padding: 5px;
+  color: rgba(70, 131, 180, 0.9);
+  text-shadow:0 0.01em 0.02em rgba(70, 131, 180, 0.9);
+}
+
+
+body {
+  background: rgb(204,204,204);
+  text-align: center;
+  font-family: Brown;
+  padding: 0;
+  margin: 0;
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="yutong"] {
+  width: 24cm;
+  height: 99cm;
+}
+#name00 {
+  margin-top: 50px;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-bottom: 100px;
+  display: grid;
+  text-align: left;
+}
+#name01 {
+  margin-top: 100px;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-bottom: 10px;
+}
+#name02 {
+  margin-top: 0px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  display: grid;
+}
+#name03 {
+  margin-top: 100px;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-bottom: 100px;
+  display: grid;
+  text-align: left;
+}
+
+      circle {
+        fill: rgba(204, 60, 45, 0.7);
+        stroke: rgb(204, 60, 45, 0.7);
+        stroke-width: 2px;
+      }
+      .dot0 {
+              stroke: rgba(70, 131, 180, 0.3);
+              stroke-width: 2px;
+              fill: rgba(70, 131, 180, 0.3);
+              font-family: sans-serif;
+              font-size: 10px;
+              font color: black;
+      }
+      .dot1 {
+              stroke: rgba(70, 131, 180, 0.7);
+              stroke-width: 2px;
+              fill: rgba(70, 131, 180, 0.7);
+              font-family: sans-serif;
+              font-size: 10px;
+              font color: black;
+      }
+      .dot2 {
+              stroke: rgba(226, 89, 139, 0.7);
+              stroke-width: 2px;
+              fill: rgba(226, 89, 139, 0.7);
+      }
+      .dot3 {
+              stroke: rgba(226, 89, 139, 0.3);
+              stroke-width: 2px;
+              fill: rgba(226, 89, 139, 0.3);
+      }
+.axis path,
+.axis line {
+              fill: none;
+              stroke: #000;
+              shape-rendering: crispEdges;
+              font-family: sans-serif;
+              font-size: 10px;
+              font color: black;
+      }
+
+      text {
+        font-family: sans-serif;
+        font-size: 10px;
+      }
+      .data-line {
+        fill: none;
+        stroke: rgb(85,174,243);
+        stroke-width: 1px;
+      }
+div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 100px;
+        height: 60px;
+        padding: 2px;
+        font: 12px sans-serif;
+        background: #fff;
+        border: 0px;
+        pointer-events: none;
+      }
+div.tooltip2 {
+        position: absolute;
+        text-align: center;
+        width: 400px;
+        height: 50px;
+        padding: 2px;
+        font: 12px sans-serif;
+        background: #fff;
+        border: 0px;
+        pointer-events: none;
+      }
+.map {
+        width: 100%;
+        max-width: 1024px;
+        margin: 0 auto;
+      }
+
+.map2 {
+        width: 100%;
+        max-width: 1024px;
+        margin: 0 auto;
+      }
+
+.legend {
+        font-size: 12px;
+        }
